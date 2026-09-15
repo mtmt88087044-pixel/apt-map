@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="color-scheme" content="light only">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>제보 피드 | 집콕맵</title>
+<meta name="description" content="집콕맵 이용자들이 남긴 최근 호가·실거래 제보 100건">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="stylesheet" href="apt/page.css">
+<style>.rep{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.rep a{color:var(--fg);font-weight:800}.k{font-size:11px;font-weight:800;padding:2px 6px;border-radius:6px;background:rgba(37,99,235,.12);color:var(--brand);margin-right:6px}.k.deal{background:rgba(22,163,74,.12);color:var(--good)}.flag{font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer}</style>
+</head>
+<body><div class="wrap">
+<header class="top"><a class="logo" href="index.html">🏠 집콕맵</a><a class="btn" href="index.html">지도로 보기</a></header>
+<h1>최근 제보</h1><div class="sub">이용자 제보 호가·실거래. 확인되지 않은 정보이니 참고만 하세요. 잘못된 제보는 "신고"로 알려주세요.</div>
+<div class="card" id="list">불러오는 중…</div>
+<div class="disclaim">신고가 3회 쌓이면 자동으로 숨겨집니다.</div>
+</div>
+<script src="config.js"></script>
+<script>
+(function () {
+  const API = (window.APT_CONFIG && window.APT_CONFIG.API_BASE) || "";
+  const el = document.getElementById("list");
+  const price = (v) => v >= 10000 ? (v / 10000).toFixed(v >= 1000000 ? 0 : 1).replace(/\.0$/, "") + "억" : v.toLocaleString() + "만";
+  const esc = (s) => String(s || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  if (!API) { el.textContent = "제보 서버가 설정되지 않았어요."; return; }
+  fetch(API + "/recent").then((r) => r.json()).then((j) => {
+    const rs = j.recent || [];
+    el.innerHTML = rs.length ? rs.map((r) => `<div class="rep"><span><span class="k ${r.kind}">${r.kind === "deal" ? "실거래" : "호가"}</span><a href="index.html?id=${encodeURIComponent(r.id)}">${esc(r.name || r.id)}</a> ${r.area}㎡ <b>${price(r.price)}</b>${r.note ? ` <span class="sub">· ${esc(r.note)}</span>` : ""}</span><span class="sub">${r.date} <button class="flag" data-id="${esc(r.id)}" data-ts="${r.ts}">신고</button></span></div>`).join("") : "아직 제보가 없어요.";
+    el.querySelectorAll(".flag").forEach((b) => b.onclick = () => {
+      if (!confirm("이 제보를 잘못된 정보로 신고할까요?")) return;
+      fetch(API + "/flag", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: b.dataset.id, ts: Number(b.dataset.ts) }) })
+        .then(() => { b.textContent = "신고됨"; b.disabled = true; });
+    });
+  }).catch(() => { el.textContent = "제보를 불러오지 못했어요."; });
+})();
+</script>
+</body>
+</html>

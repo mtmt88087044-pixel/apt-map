@@ -1,0 +1,36 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="color-scheme" content="light only"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>집콕맵 소개 · 데이터 출처와 한계</title><meta name="description" content="세 아이 부모가 만든 아파트 지도. 실거래·학구도·학교 통계·기피시설·지형을 공공데이터로 계산합니다."><link rel="canonical" href="https://jipkokmap.kr/about.html">
+<meta property="og:title" content="집콕맵 소개 · 데이터 출처와 한계"><meta property="og:description" content="세 아이 부모가 만든 아파트 지도. 실거래·학구도·학교 통계·기피시설·지형을 공공데이터로 계산합니다."><meta property="og:url" content="https://jipkokmap.kr/about.html">
+<link rel="icon" type="image/svg+xml" href="icon.svg"><link rel="stylesheet" href="apt/page.css"></head><body><div class="wrap">
+<header class="top"><a class="logo" href="index.html">🏠 집콕맵</a><nav style="display:flex;gap:10px;font-size:13px"><a href="calc.html">계산기</a><a href="rank/index.html">랭킹</a><a href="guide.html">지표 설명</a><a href="about.html">소개</a><a class="btn" href="index.html">지도</a></nav></header>
+
+<h1>집콕맵 소개</h1>
+<p class="sub">아파트를 "가격"이 아니라 "살아보면 어떤가"로 보는 지도</p>
+<div class="card">
+<p>집콕맵은 세 아이를 키우는 부모가 이사할 집을 고르다 만든 서비스입니다. 실거래가 앱은 많지만, 정작 궁금했던 것들은 흩어져 있었습니다. 배정 초등학교가 정확히 어디인지, 통학로에 큰길을 건너야 하는지, 단지가 언덕 위인지, 근처에 변전소나 유흥가가 있는지, 어린이집과 소아과는 몇 곳인지, 전세가율이 위험한 수준인지. 이걸 한 화면에 모으는 게 목표입니다.</p>
+<p>모든 숫자는 공공기관이 공개한 자료를 그대로 계산한 것입니다. 사람이 임의로 점수를 매기지 않고, 같은 기준을 서울의 모든 단지에 똑같이 적용합니다. 그래서 어느 단지든 같은 잣대로 비교할 수 있습니다.</p>
+</div>
+<h2>어떤 데이터를 쓰나</h2>
+<div class="card"><table><tr><th>항목</th><th>출처</th><th>갱신</th></tr>
+<tr><td>매매·전월세 실거래</td><td>국토교통부 실거래가 공개시스템</td><td>매주</td></tr>
+<tr><td>초등 통학구역·중학교 학군·고등학교 학교군</td><td>한국교육시설안전원 학구도안내서비스</td><td>연 2회</td></tr>
+<tr><td>학교 학생 수·학급당 인원·전출입</td><td>학교알리미 (교육부)</td><td>연 1회</td></tr>
+<tr><td>학원·교습소, 학교 기본정보</td><td>나이스 교육정보 개방포털</td><td>분기</td></tr>
+<tr><td>세대수·동수·주차대수·분양/임대 구분</td><td>K-apt 공동주택관리정보, 서울시 공동주택 정보</td><td>분기</td></tr>
+<tr><td>도로·인도·기피시설·주요시설·공원</td><td>오픈스트리트맵</td><td>분기</td></tr>
+<tr><td>어린이집·소아과·병원·마트 개수</td><td>카카오 지도</td><td>새 단지 추가 시</td></tr>
+<tr><td>고도·경사</td><td>AWS 공개 지형 자료 (약 30m 해상도)</td><td>고정</td></tr>
+</table></div>
+<h2>한계와 약속</h2>
+<div class="card"><ul class="plist">
+<li class="info"><i>i</i><span>실거래는 신고 지연이 최대 30일이라 오늘 계약된 거래는 아직 안 보일 수 있습니다.</span></li>
+<li class="info"><i>i</i><span>초등 배정은 공식 학구도 기준이지만 매년 조정될 수 있고, 중·고등학교는 학교군 내 추첨이라 특정 학교를 확정할 수 없습니다.</span></li>
+<li class="info"><i>i</i><span>기피시설·주요시설은 오픈스트리트맵 등록 기준이라 빠진 곳이 있을 수 있습니다. 잘못된 정보는 제보로 알려주세요.</span></li>
+<li class="info"><i>i</i><span>모든 점수와 신호는 참고용이며 투자 권유가 아닙니다. 계약 전에는 반드시 현장을 보고 등기부등본과 교육청 공지를 확인하세요.</span></li>
+<li class="info"><i>i</i><span>이용자 제보는 검수 없이 표시되며, 신고가 3회 쌓이면 자동으로 숨겨집니다.</span></li>
+</ul></div>
+<h2>문의</h2>
+<div class="card"><p>오류 신고, 데이터 제안, 제휴 문의: 집콕맵 지도 화면의 제보 기능 또는 운영자 이메일(추후 공개)</p></div>
+
+<footer class="disclaim" style="margin-top:40px;border-top:1px solid var(--line);padding-top:14px">집콕맵 · <a href="about.html">소개</a> · <a href="guide.html">지표 설명</a> · <a href="calc.html">계산기</a> · <a href="fund.html">자금 마련</a> · <a href="rank/budget-school.html">예산별 학군지</a> · <a href="privacy.html">개인정보처리방침</a> · <a href="moving.html">이사 준비</a> · <a href="feed.html">제보 피드</a><br>공공데이터(국토교통부·교육부·한국교육시설안전원·나이스·학교알리미·서울시)와 오픈스트리트맵, 카카오 지도 정보를 조합해 자동 생성한 참고 자료입니다. 매매 판단 전 반드시 현장·등기부·교육청 공지를 확인하세요.</footer>
+</div><script>(function(){try{var P=location.pathname,p=/\/apt\//.test(P)?"apt":/\/rank\//.test(P)?"rank":/guide/.test(P)?"guide":/calc/.test(P)?"calc":/fund/.test(P)?"fund":/moving/.test(P)?"moving":"other";if(/^(localhost|127\.)/.test(location.hostname)||sessionStorage.getItem("jk_v"))return;sessionStorage.setItem("jk_v","1");navigator.sendBeacon&&navigator.sendBeacon("https://aptmap-api.jipkokmap.workers.dev/hit",JSON.stringify({t:"visit",p:p,r:document.referrer}))}catch(e){}})();</script></body></html>

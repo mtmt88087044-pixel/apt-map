@@ -1,0 +1,64 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="color-scheme" content="light only"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>집콕맵 지표 설명 · 아이 키우기 점수, 학군 지수, 위험·상승 신호</title><meta name="description" content="집콕맵의 점수와 태그가 어떻게 계산되는지 기준을 모두 공개합니다."><link rel="canonical" href="https://jipkokmap.kr/guide.html">
+<meta property="og:title" content="집콕맵 지표 설명 · 아이 키우기 점수, 학군 지수, 위험·상승 신호"><meta property="og:description" content="집콕맵의 점수와 태그가 어떻게 계산되는지 기준을 모두 공개합니다."><meta property="og:url" content="https://jipkokmap.kr/guide.html">
+<link rel="icon" type="image/svg+xml" href="icon.svg"><link rel="stylesheet" href="apt/page.css"></head><body><div class="wrap">
+<header class="top"><a class="logo" href="index.html">🏠 집콕맵</a><nav style="display:flex;gap:10px;font-size:13px"><a href="calc.html">계산기</a><a href="rank/index.html">랭킹</a><a href="guide.html">지표 설명</a><a href="about.html">소개</a><a class="btn" href="index.html">지도</a></nav></header>
+
+<h1>집콕맵 지표 설명</h1>
+<p class="sub">화면에 나오는 점수와 태그가 어떻게 계산되는지</p>
+
+<h2>👶 아이 키우기 점수 (0~100)</h2>
+<div class="card"><p>여섯 가지 축을 가중 평균합니다. 각 축은 0~100이고, 서울 전체 단지 안에서의 순위(상위 %)를 함께 보여줍니다.</p>
+<table><tr><th>축</th><th>비중</th><th>무엇을 보나</th></tr>
+<tr><td>초등 접근</td><td>20%</td><td>배정 초등학교까지 거리. 300m 이내(초품아) 100점, 500m 75점, 800m 45점, 그 이상 15점</td></tr>
+<tr><td>학군</td><td>15%</td><td>아래 '학군 지수'를 그대로 사용</td></tr>
+<tr><td>보육·의료</td><td>20%</td><td>700m 내 어린이집·유치원 수, 1km 내 소아과 수, 병원·약국 수</td></tr>
+<tr><td>지형·보행</td><td>15%</td><td>반경 100m 경사, 역과의 고도차, 대로변 여부</td></tr>
+<tr><td>환경·안전</td><td>15%</td><td>기준 거리 안 기피시설 개수 (0개 100점, 1개 60점, 2개 30점)</td></tr>
+<tr><td>생활 편의</td><td>15%</td><td>세대당 주차, 공원·도서관·대형마트 유무</td></tr></table>
+<p class="note">점수가 높다고 좋은 집이라는 뜻은 아닙니다. 부모가 자주 보는 조건을 같은 기준으로 줄 세운 것이고, 가족마다 우선순위가 다르니 축별 점수를 함께 보세요.</p></div>
+
+<h2>🎓 학군 지수 (0~100)</h2>
+<div class="card"><p>교과학원 밀집(반경 1km 입시·보습 학원 수) 40%, 배정 초등의 전입 순유입 25%, 초등 학생 수 증감 15%, 중학교 규모·학급당 인원 20%를 서울 전체 백분위로 환산해 합칩니다. 특목고 진학률이나 학업성취도는 학교알리미가 더 이상 공시하지 않거나 자동 수집이 막혀 있어 넣지 않았습니다.</p>
+<p>그래서 이 지수가 재는 것은 학교의 성적이 아니라 <b>또래 환경</b>입니다. 학군지를 찾는 이유를 "공부 잘하는 학교"로만 설명하면 절반만 맞습니다. 내 아이만 관리해도 반 친구들이 다르게 움직이면 소용이 없고, 반대로 주변이 공부하는 분위기면 아이도 끌려갑니다. 학원이 몰려 있고 학부모가 굳이 이사 와서 들어오는 동네라면 교실 분위기도 그쪽으로 형성됩니다. 이 지수는 그 <b>학부모들의 실제 행동</b>을 대리 지표로 씁니다.</p>
+<p class="note">학군 지수가 높다고 좋은 동네라는 뜻은 아닙니다. 학원이 많다는 건 사교육비가 많이 든다는 뜻이기도 하고, 아이 성향에 따라 오히려 힘든 환경일 수 있습니다.</p></div>
+
+<h2>💰 예산 대비 학군</h2>
+<div class="card"><p>학군 지수만 보면 결국 늘 같은 동네가 위로 옵니다. 정작 필요한 답은 "<b>내 예산으로 갈 수 있는 최고 학군은 어디냐</b>"입니다. 그래서 대표 실거래가(84㎡급 우선)로 단지를 5억 미만 · 5~8억 · 8~11억 · 11~15억 · 15~20억 · 20억 이상 여섯 구간으로 나눈 뒤, <b>같은 구간 안에서만</b> 학군 지수를 줄 세웁니다.</p>
+<p>단지 화면에 "같은 가격대 8~11억, 이 구간 1,092개 단지 중 학군 상위 12%" 처럼 표시되고, 지도 위 <b>💰 예산 대비 학군</b> 칩으로 그 순서대로 볼 수 있습니다. 20억대와 비교하면 밀리는 단지도 자기 가격대에서는 1등일 수 있고, 그 자리를 찾는 것이 목적입니다. 구간별 상위 단지는 <a href="rank/budget-school.html">예산별 학군지 가이드</a>에 정리했습니다.</p>
+<p class="note">평형에 따라 같은 단지도 구간이 달라집니다. 대표 실거래가는 84㎡급 기준이라 59㎡를 보신다면 한 구간 아래에서 다시 찾아보세요.</p></div>
+
+<h2>🚉 출퇴근 시간</h2>
+<div class="card"><p>회사 근처 역(맞벌이라면 두 곳)과 최대 편도 시간을 넣으면, 단지마다 <b>집에서 역까지 도보 + 대기 3분 + 지하철 탑승</b> 시간을 계산해 조건 안에 드는 단지만 보여줍니다. 단지 반경 1.5km 안의 역 최대 3곳 중 가장 빠른 경로를 씁니다.</p>
+<p>지하철 구간 시간은 OpenStreetMap 노선 데이터의 역 순서와 거리로 추정합니다. 일반 노선은 표정속도 약 36km/h, 신분당선·GTX-A·공항철도는 더 빠르게 잡고, 환승 한 번마다 4분을 더합니다. <b>완행 기준</b>이라 급행을 타면 더 짧고, 버스 경로는 아직 반영하지 않습니다. 예산으로 찾기와 함께 걸면 "두 사람 출근 40분 이내 + 예산 8억 + 같은 가격대 학군 순" 같은 조건을 한 번에 볼 수 있고, 조건이 담긴 링크를 그대로 공유할 수 있습니다.</p></div>
+
+<h2>🏢 공급 유형 (분양 · 임대 · 혼합)</h2>
+<div class="card"><p>K-apt 공동주택관리정보와 서울시 자료에 등록된 구분을 그대로 표시합니다. 분양, 임대, 분양·임대 혼합, 기타로 나뉘고 단지 화면과 단지 페이지에 적습니다. 세대수·동수·세대당 주차 대수도 같은 자료입니다. 확인 가능한 사실이라 그대로 옮기며, 집콕맵은 <b>사람을 분류하는 지표는 만들지 않습니다</b>.</p></div>
+
+<h2>📈 위험·상승 신호와 국면</h2>
+<div class="card"><p>최근 24개월 실거래로 자동 계산합니다.</p>
+<ul class="plist">
+<li class="good"><i>↑</i><span>신고가 경신: 주력 평형의 최근 6개월 거래가 24개월 최고가를 넘김</span></li>
+<li class="good"><i>↑</i><span>거래 활발: 최근 6개월 월평균 거래가 이전 12개월의 1.8배 이상</span></li>
+<li class="good"><i>↑</i><span>갭·전세가율: 전세가율 70~90% 구간, 초등 순전입 증가, 준공 30년 경과(재건축 연한)</span></li>
+<li class="bad"><i>!</i><span>하락: 최근 3건 중앙값이 최고가 대비 10% 이상 낮음 (신고가 경신 중이면 제외)</span></li>
+<li class="bad"><i>!</i><span>거래 급감: 최근 6개월 월평균이 이전의 40% 이하</span></li>
+<li class="bad"><i>!</i><span>환금성: 300세대 미만이면서 1년 거래 3건 이하</span></li>
+<li class="bad"><i>!</i><span>깡통전세: 전세가율 90% 이상</span></li>
+<li class="bad"><i>!</i><span>노후+주차: 25년 이상이면서 세대당 주차 0.7대 미만</span></li></ul>
+<p>국면 한 줄은 최근 6개월 평당가 중앙값을 이전 12개월과 비교하고 거래량 변화를 합쳐 "상승 지속·가격은 올랐지만 거래 감소·조정·거래 위축·횡보" 다섯 가지로 요약합니다.</p></div>
+
+<h2>🚧 기피·주의 시설</h2>
+<div class="card"><p>종류별로 기준 거리를 다르게 둡니다. 변전소 300m, 고압 송전선 100m, 매립·소각·폐기물 1km, 하수처리 800m, 화장장·장례식장 300m, 교도소 500m, 군부대 300m, 주유소 150m, 유흥·모텔 200m, 지상 철도 100m, 고속도로 150m. 기준 거리 안이면 ⚠️로 표시하고 장단점에 최대 2개까지 넣습니다. 지하로 지나는 철도는 제외합니다.</p></div>
+
+<h2>⛰️ 지형과 통학로</h2>
+<div class="card"><p>해발고도, 반경 100m 안의 최대 고도차를 거리로 나눈 경사(%), 가까운 역과의 고도차를 계산합니다. 역보다 30m 이상 높으면 "언덕 위 단지", 경사 8% 이상이면 "경사 가파름", 평지에 고도차 10m 미만이면 "평지"로 표시합니다. 통학로는 단지와 배정 초등학교를 잇는 직선이 큰길(간선도로)과 교차하면 "큰길 횡단 가능성"으로 표시하며 지하보도·육교는 반영하지 못합니다.</p></div>
+
+<h2>🏫 배정 학교</h2>
+<div class="card"><p>초등학교는 교육청이 고시한 통학구역 폴리곤 안에 단지가 들어가면 그 학교로 표시합니다(공동통학구역이면 후보 학교를 모두 표시). 중학교는 학교군 안의 학교를 가까운 순으로, 고등학교는 학교군 안 일반고와 3km 안 자율·특목고를 보여줍니다. 중·고등학교는 추첨 배정이라 특정 학교를 확정할 수 없습니다.</p></div>
+
+<h2>제보와 알림</h2>
+<div class="card"><p>호가·실거래 제보는 로그인 없이 익명으로 받고, 같은 IP는 시간당 20건까지입니다. 잘못된 제보는 "신고"로 알려주시면 3회 이상 신고 시 숨겨집니다. 찜한 단지의 실거래 알림은 이메일만 저장하며 메일 하단 링크로 언제든 해제할 수 있습니다.</p></div>
+
+<footer class="disclaim" style="margin-top:40px;border-top:1px solid var(--line);padding-top:14px">집콕맵 · <a href="about.html">소개</a> · <a href="guide.html">지표 설명</a> · <a href="calc.html">계산기</a> · <a href="fund.html">자금 마련</a> · <a href="rank/budget-school.html">예산별 학군지</a> · <a href="privacy.html">개인정보처리방침</a> · <a href="moving.html">이사 준비</a> · <a href="feed.html">제보 피드</a><br>공공데이터(국토교통부·교육부·한국교육시설안전원·나이스·학교알리미·서울시)와 오픈스트리트맵, 카카오 지도 정보를 조합해 자동 생성한 참고 자료입니다. 매매 판단 전 반드시 현장·등기부·교육청 공지를 확인하세요.</footer>
+</div><script>(function(){try{var P=location.pathname,p=/\/apt\//.test(P)?"apt":/\/rank\//.test(P)?"rank":/guide/.test(P)?"guide":/calc/.test(P)?"calc":/fund/.test(P)?"fund":/moving/.test(P)?"moving":"other";if(/^(localhost|127\.)/.test(location.hostname)||sessionStorage.getItem("jk_v"))return;sessionStorage.setItem("jk_v","1");navigator.sendBeacon&&navigator.sendBeacon("https://aptmap-api.jipkokmap.workers.dev/hit",JSON.stringify({t:"visit",p:p,r:document.referrer}))}catch(e){}})();</script></body></html>

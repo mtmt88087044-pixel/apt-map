@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="color-scheme" content="light only">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>제보 관리 | 집콕맵</title>
+<link rel="stylesheet" href="apt/page.css">
+<style>.rep{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:center}.del{font-size:12px;color:#fff;background:var(--bad);border:0;border-radius:8px;padding:6px 10px;cursor:pointer}.flags{color:var(--bad);font-weight:800}input{font:inherit;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);width:100%}</style>
+</head>
+<body><div class="wrap">
+<header class="top"><a class="logo" href="index.html">🏠 집콕맵 관리</a></header>
+<h1>방문 통계</h1>
+<div class="card"><label>관리자 키 <input id="key" type="password" placeholder="ADMIN_KEY"></label><p><button class="btn" id="load">불러오기</button></p></div>
+<div class="card" id="stats">키를 입력하고 불러오기를 누르세요.</div>
+<h2>제보</h2>
+<div class="card" id="list">-</div>
+<h2>알림 등록</h2><div class="card" id="alerts">-</div>
+</div>
+<script src="config.js"></script>
+<script>
+(function () {
+  const API = (window.APT_CONFIG && window.APT_CONFIG.API_BASE) || "";
+  const $ = (s) => document.querySelector(s);
+  const price = (v) => v >= 10000 ? (v / 10000).toFixed(1).replace(/\.0$/, "") + "억" : v.toLocaleString() + "만";
+  const esc = (s) => String(s || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const saved = sessionStorage.getItem("adminKey"); if (saved) $("#key").value = saved;
+  $("#load").onclick = () => {
+    const key = $("#key").value.trim(); sessionStorage.setItem("adminKey", key);
+    fetch(`${API}/admin/reports?key=${encodeURIComponent(key)}`).then((r) => r.json()).then((j) => {
+      if (j.error) { $("#list").textContent = "권한 없음"; return; }
+      const rs = j.recent || [];
+      $("#list").innerHTML = rs.length ? rs.map((r) => `<div class="rep"><span>${r.kind === "deal" ? "실거래" : "호가"} · <a href="index.html?id=${encodeURIComponent(r.id)}">${esc(r.name || r.id)}</a> ${r.area}㎡ <b>${price(r.price)}</b> ${esc(r.note)} <span class="sub">${r.date}</span> ${r.flags ? `<span class="flags">신고 ${r.flags}</span>` : ""}</span><button class="del" data-id="${esc(r.id)}" data-ts="${r.ts}">삭제</button></div>`).join("") : "제보 없음";
+      document.querySelectorAll(".del").forEach((b) => b.onclick = () => {
+        if (!confirm("삭제할까요?")) return;
+        fetch(`${API}/admin/delete`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ key, id: b.dataset.id, ts: Number(b.dataset.ts) }) }).then(() => b.closest(".rep").remove());
+      });
+    });
+    fetch(`${API}/admin/stats?key=${encodeURIComponent(key)}&days=30`).then((r) => r.json()).then((j) => {
+      if (j.error) { $("#stats").textContent = "키가 틀렸어요."; return; }
+      const ds = j.days || [], sum = (f) => ds.reduce((s, d) => s + f(d), 0);
+      const today = ds[0] || { visit: 0 }, wk = ds.slice(0, 7).reduce((s, d) => s + d.visit, 0);
+      const max = Math.max(1, ...ds.map((d) => d.visit));
+      const agg = (f) => { const o = {}; ds.forEach((d) => Object.entries(f(d) || {}).forEach(([k, v]) => { o[k] = (o[k] || 0) + v; })); return Object.entries(o).sort((a, b) => b[1] - a[1]); };
+      const PG = { app: "지도 앱", apt: "단지 페이지", rank: "랭킹", guide: "지표 설명", calc: "계산기", fund: "자금 마련", moving: "이사 체크", other: "기타" };
+      const EV = { commute: "출퇴근 찾기", budget: "예산 찾기", share: "공유", compare: "비교", fav: "찜", report: "제보" };
+      const row = (k, v) => `<div class="rep"><span>${esc(k)}</span><b>${v.toLocaleString()}</b></div>`;
+      $("#stats").innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
+          <div><div class="sub">오늘</div><div style="font-size:26px;font-weight:900">${today.visit}</div></div>
+          <div><div class="sub">최근 7일</div><div style="font-size:26px;font-weight:900">${wk}</div></div>
+          <div><div class="sub">최근 30일</div><div style="font-size:26px;font-weight:900">${sum((d) => d.visit)}</div></div>
+        </div>
+        <p class="sub">방문 = 브라우저 세션 1회. 휴대폰 비중 ${sum((d) => d.visit) ? Math.round(sum((d) => d.mobile) / sum((d) => d.visit) * 100) : 0}%</p>
+        <div style="display:flex;align-items:flex-end;gap:3px;height:90px;margin:8px 0 14px">${ds.slice().reverse().map((d) =>
+          `<div title="${d.date} ${d.visit}" style="flex:1;background:#3b82f6;border-radius:3px 3px 0 0;height:${Math.max(2, d.visit / max * 100)}%;opacity:${d.visit ? 1 : .25}"></div>`).join("")}</div>
+        <h3>들어온 곳 (30일)</h3>${agg((d) => d.ref).slice(0, 10).map(([k, v]) => row(k, v)).join("") || "<p class='sub'>아직 없음</p>"}
+        <h3>처음 연 페이지</h3>${agg((d) => d.pages).map(([k, v]) => row(PG[k] || k, v)).join("") || "<p class='sub'>아직 없음</p>"}
+        <h3>기능 사용</h3>${agg((d) => d.ev).map(([k, v]) => row(EV[k] || k, v)).join("") || "<p class='sub'>아직 없음</p>"}`;
+    });
+    fetch(`${API}/admin/alerts?key=${encodeURIComponent(key)}`).then((r) => r.json()).then((j) => {
+      const al = j.alerts || [];
+      $("#alerts").innerHTML = al.length ? al.map((a) => `<div class="rep"><span>${esc(a.email)} <span class="sub">단지 ${a.ids.length}개 · ${new Date(a.ts).toISOString().slice(0, 10)}</span></span></div>`).join("") : "등록 없음";
+    });
+  };
+})();
+</script>
+</body>
+</html>

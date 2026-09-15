@@ -1,0 +1,9 @@
+{
+  "name": "집콕맵 - 실거래·학군·도로 한눈에",
+  "short_name": "집콕맵",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]
+}

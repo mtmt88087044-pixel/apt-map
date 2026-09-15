@@ -1,0 +1,501 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="color-scheme" content="light only"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>부동산 계산기 · 취득세·중개수수료·대출 상환금·보유세 | 집콕맵</title><meta name="description" content="매매가만 넣으면 취득세, 중개수수료, 대출 월 상환금, 내 소득 기준 대출한도, 보유세, 전월세 환산, 갈아타기 비용을 한 번에 계산합니다."><link rel="canonical" href="https://jipkokmap.kr/calc.html">
+<meta property="og:title" content="부동산 계산기 · 취득세·중개수수료·대출 상환금·보유세 | 집콕맵"><meta property="og:description" content="매매가만 넣으면 취득세, 중개수수료, 대출 월 상환금, 내 소득 기준 대출한도, 보유세, 전월세 환산, 갈아타기 비용을 한 번에 계산합니다."><meta property="og:url" content="https://jipkokmap.kr/calc.html">
+<link rel="icon" type="image/svg+xml" href="icon.svg"><link rel="stylesheet" href="apt/page.css"><style>
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 4px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+.tabs button{font-size:13.5px;font-weight:700;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.calc{display:none}.calc.on{display:block}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin:4px 0 12px}
+.f label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.f label.wide{grid-column:1/-1}
+.f input,.f select{font:inherit;font-size:15px;font-weight:700;color:var(--fg);padding:10px 11px;border:1px solid var(--line);border-radius:11px;background:var(--bg);width:100%}
+.f input[type=checkbox]{width:auto;transform:scale(1.25);margin-right:7px}
+.f label.chk{flex-direction:row;align-items:center;font-size:13.5px;color:var(--fg);padding-top:6px}
+.out{background:var(--bg);border-radius:14px;padding:13px 15px;margin-top:4px}
+.out .tot{font-size:15px;font-weight:800;display:flex;justify-content:space-between;align-items:baseline;padding:9px 0 4px;border-top:2px solid var(--line);margin-top:6px}
+.out .tot b{font-size:26px;letter-spacing:-1px;color:var(--brand)}
+.out .row{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:5px 0;border-bottom:1px solid var(--line)}
+.out .row span:first-child{color:var(--muted);font-weight:600}
+.out .row b{font-weight:800;white-space:nowrap}
+.out .row.warn b{color:var(--bad)}.out .row.ok b{color:var(--good)}
+.out .head{font-size:12px;font-weight:800;color:var(--muted);margin:12px 0 2px;letter-spacing:.3px}
+.hint{font-size:12px;color:var(--muted);margin-top:9px;line-height:1.65}
+@media(max-width:520px){.f{grid-template-columns:1fr}}
+</style></head><body><div class="wrap">
+<header class="top"><a class="logo" href="index.html">🏠 집콕맵</a><nav style="display:flex;gap:10px;font-size:13px"><a href="calc.html">계산기</a><a href="rank/index.html">랭킹</a><a href="guide.html">지표 설명</a><a href="about.html">소개</a><a class="btn" href="index.html">지도</a></nav></header>
+
+<h1>부동산 계산기</h1>
+<p class="sub">취득세·중개수수료·대출 상환금·보유세·전월세 환산·갈아타기 비용을 한 페이지에서. 입력값은 브라우저에만 저장되고 서버로 보내지 않습니다.</p>
+<div class="tabs" id="tabs"><button data-t="acq" class="on">취득세</button><button data-t="fee">중개수수료</button><button data-t="loan">대출 상환금</button><button data-t="dsr">내 대출한도</button><button data-t="hold">보유세</button><button data-t="conv">전세↔월세</button><button data-t="move">갈아타기</button></div>
+
+<section class="calc on" id="c-acq">
+<h2>취득세 계산</h2>
+<div class="card"><div class="f"><label class=""><span>매매가 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="aqPrice" type="number" step="0.1" value="9"></label><label class=""><span>취득 후 보유 주택 수</span><select id="aqHouses"><option value="1" selected>1주택</option><option value="2">2주택</option><option value="3">3주택</option><option value="4">4주택 이상</option></select></label><label class=""><span>전용면적</span><select id="aqArea"><option value="under" selected>85㎡ 이하 (농특세 비과세)</option><option value="over">85㎡ 초과</option></select></label><label class=""><span>소재지</span><select id="aqAdj"><option value="no" selected>비조정대상지역</option><option value="yes">조정대상지역</option></select></label><label class="chk wide"><input id="aqFirst" type="checkbox"> 생애최초 주택 구입 (12억 이하 · 최대 200만원 감면)</label><label class="chk wide"><input id="aqTemp" type="checkbox"> 일시적 2주택 (종전 주택을 기한 내 처분 → 1주택 세율)</label></div><div class="out" id="o-acq"></div>
+<div class="hint">6억 초과 9억 이하 구간은 <b>세율(%) = 매매가(억) × 2 ÷ 3 − 3</b> 으로 매매가에 따라 1~3% 사이에서 연속으로 올라갑니다. 지방교육세는 취득세의 10%(중과 시 0.4% 고정)이고, 농어촌특별세는 전용 85㎡ 초과일 때만 붙습니다. 분양권·입주권, 상속·증여 취득, 오피스텔, 조합원 승계는 세율 체계가 달라 이 계산기로는 맞지 않습니다.</div>
+</div></section>
+
+<section class="calc" id="c-fee">
+<h2>중개수수료 계산</h2>
+<div class="card"><div class="f"><label class=""><span>거래 종류</span><select id="feeKind"><option value="sale" selected>매매·교환</option><option value="jeonse">전세</option><option value="wolse">월세</option></select></label><label class=""><span>매매가 / 보증금 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="feeAmt" type="number" step="0.1" value="9"></label><label class=""><span>월세 (월세 거래만) <span style="font-weight:600;color:var(--brand)">만원</span></span><input id="feeMonthly" type="number" step="1" value="0"></label><label class=""><span>중개사 과세 유형</span><select id="feeVat"><option value="10" selected>일반과세자 (부가세 10%)</option><option value="0">간이과세자 (부가세 없음)</option></select></label><label class="wide"><span>협의 요율 (0이면 상한 적용) <span style="font-weight:600;color:var(--brand)">%</span></span><input id="feeNego" type="number" step="0.01" value="0"></label></div><div class="out" id="o-fee"></div>
+<div class="hint">서울특별시 주택 중개보수 요율(2021년 10월 개정) 기준입니다. 표에 적힌 요율은 <b>상한</b>이라 실제로는 깎을 수 있고, 특히 9억 이상 구간은 협의 여지가 큽니다. 월세는 거래금액을 <b>보증금 + 월세×100</b>으로 잡되 그 값이 5천만원 미만이면 <b>보증금 + 월세×70</b>으로 다시 계산합니다. 오피스텔·상가는 요율 체계가 다릅니다.</div>
+</div></section>
+
+<section class="calc" id="c-loan">
+<h2>대출 월 상환금</h2>
+<div class="card"><div class="f"><label class=""><span>대출금 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="lnAmt" type="number" step="0.1" value="4"></label><label class=""><span>연 금리 <span style="font-weight:600;color:var(--brand)">%</span></span><input id="lnRate" type="number" step="0.01" value="4.2"></label><label class=""><span>대출 기간 <span style="font-weight:600;color:var(--brand)">년</span></span><input id="lnYears" type="number" step="1" value="30"></label><label class=""><span>거치 기간 (이자만) <span style="font-weight:600;color:var(--brand)">년</span></span><input id="lnGrace" type="number" step="1" value="0"></label><label class="wide"><span>상환 방식</span><select id="lnType"><option value="eqpay" selected>원리금균등 (매달 같은 금액)</option><option value="eqprin">원금균등 (갈수록 줄어듦)</option><option value="bullet">만기일시 (이자만, 만기에 원금)</option></select></label><label class="wide"><span>세전 연소득 (부담률 계산용, 선택) <span style="font-weight:600;color:var(--brand)">만원</span></span><input id="lnIncome" type="number" step="100" value="0"></label></div><div class="out" id="o-loan"></div>
+<div class="hint">원리금균등은 매달 내는 돈이 같아 계획이 쉽고, 원금균등은 초반 부담이 크지만 총이자가 적습니다. 거치 기간에는 원금이 전혀 줄지 않으니 거치가 끝나는 달의 상환액을 반드시 확인하세요. 중도상환수수료(보통 1.2~1.4%, 3년 경과 시 면제)와 인지세·근저당 설정비는 포함되지 않았습니다.</div>
+</div></section>
+
+<section class="calc" id="c-dsr">
+<h2>내 소득으로 얼마까지 빌릴 수 있나</h2>
+<div class="card"><div class="f"><label class=""><span>세전 연소득 (부부 합산 가능) <span style="font-weight:600;color:var(--brand)">만원</span></span><input id="dsIncome" type="number" step="100" value="6000"></label><label class=""><span>기존 대출 연간 원리금 상환액 <span style="font-weight:600;color:var(--brand)">만원</span></span><input id="dsOther" type="number" step="10" value="0"></label><label class=""><span>예상 금리 <span style="font-weight:600;color:var(--brand)">%</span></span><input id="dsRate" type="number" step="0.01" value="4.2"></label><label class=""><span>스트레스 금리 가산 <span style="font-weight:600;color:var(--brand)">%p</span></span><input id="dsStress" type="number" step="0.1" value="1.5"></label><label class=""><span>대출 기간 <span style="font-weight:600;color:var(--brand)">년</span></span><input id="dsYears" type="number" step="1" value="30"></label><label class=""><span>금융권</span><select id="dsCap"><option value="40" selected>1금융권 은행 (DSR 40%)</option><option value="50">보험사·상호금융 (DSR 50%)</option></select></label><label class=""><span>사려는 집 가격 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="dsPrice" type="number" step="0.1" value="9"></label><label class=""><span>적용 LTV <span style="font-weight:600;color:var(--brand)">%</span></span><input id="dsLtv" type="number" step="1" value="70"></label></div><div class="out" id="o-dsr"></div>
+<div class="hint">DSR은 <b>연간 갚는 모든 대출 원리금 ÷ 연소득</b>입니다. 한도 심사에는 실제 금리가 아니라 여기에 스트레스 금리를 더한 값으로 원리금을 계산하므로 체감 한도가 줄어듭니다. 신용대출·마이너스통장·카드론·학자금도 전부 합산되니 기존 대출 칸에 빠짐없이 넣으세요. LTV는 지역·주택가격·무주택 여부에 따라 달라지고 생애최초는 더 높게 적용될 수 있습니다. 실제 한도는 은행 심사 결과가 기준입니다.</div>
+</div></section>
+
+<section class="calc" id="c-hold">
+<h2>보유세 (재산세 + 종합부동산세)</h2>
+<div class="card"><div class="f"><label class=""><span>공시가격 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="hdPub" type="number" step="0.1" value="7"></label><label class=""><span>보유 주택 수</span><select id="hdHouses"><option value="1" selected>1세대 1주택</option><option value="2">2주택</option><option value="3">3주택 이상</option></select></label><label class="chk wide"><input id="hdCouple" type="checkbox"> 부부 공동명의 (지분 각 50%)</label><label class=""><span>만 나이 (1주택 단독명의 세액공제) <span style="font-weight:600;color:var(--brand)">세</span></span><input id="hdAge" type="number" step="1" value="0"></label><label class=""><span>보유 기간 <span style="font-weight:600;color:var(--brand)">년</span></span><input id="hdHold" type="number" step="1" value="0"></label></div><div class="out" id="o-hold"></div>
+<div class="hint"><b>여기 넣는 값은 실거래가가 아니라 공시가격입니다.</b> 공시가격은 보통 실거래가의 60~70% 수준이고, <a href="https://www.realtyprice.kr" target="_blank" rel="noopener">부동산공시가격 알리미</a>에서 주소로 조회할 수 있습니다. 그래서 다른 탭과 달리 단지 실거래가가 자동으로 채워지지 않습니다.<br>재산세 과세표준은 공시가격에 공정시장가액비율(1주택 43~45%, 그 외 60%)을 곱해 구하고, 여기에 도시지역분(과표의 0.14%)과 지방교육세(재산세의 20%)가 더해집니다. 종부세는 1세대 1주택 12억, 그 외 9억을 공제한 뒤 60%를 곱해 계산하며 부부 공동명의는 각자 9억씩 공제받습니다. 고령자·장기보유 세액공제는 1주택 단독명의일 때만, 합쳐서 최대 80%까지 적용했습니다. 세부담상한(전년 대비 105~130%)과 지자체 탄력세율은 반영하지 않은 추정치입니다.</div>
+</div></section>
+
+<section class="calc" id="c-conv">
+<h2>전세 ↔ 월세 환산</h2>
+<div class="card"><div class="f"><label class=""><span>전세 보증금 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="cvJeonse" type="number" step="0.1" value="5"></label><label class=""><span>월세로 돌릴 때 남길 보증금 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="cvDeposit" type="number" step="0.1" value="1"></label><label class=""><span>한국은행 기준금리 <span style="font-weight:600;color:var(--brand)">%</span></span><input id="cvBase" type="number" step="0.05" value="2.5"></label><label class=""><span>법정 가산 <span style="font-weight:600;color:var(--brand)">%p</span></span><input id="cvAdd" type="number" step="0.1" value="2"></label><label class=""><span>역산할 월세 <span style="font-weight:600;color:var(--brand)">만원</span></span><input id="cvMonthly" type="number" step="1" value="100"></label><label class=""><span>실제 제시받은 전환율 (0이면 법정) <span style="font-weight:600;color:var(--brand)">%</span></span><input id="cvReal" type="number" step="0.1" value="0"></label><label class="wide"><span>전세대출 금리 (월세와 비교용) <span style="font-weight:600;color:var(--brand)">%</span></span><input id="cvLoanRate" type="number" step="0.01" value="3.8"></label></div><div class="out" id="o-conv"></div>
+<div class="hint">주택임대차보호법상 법정 전환율은 <b>기준금리 + 2%p</b> 와 <b>연 10%</b> 중 낮은 값이고, 이 상한은 <b>기존 계약을 월세로 바꿀 때</b>만 강제됩니다. 새로 맺는 계약이나 집주인이 바뀐 경우에는 시장 전환율(서울 아파트는 대체로 4~6%)로 협의합니다. 전환율이 높을수록 세입자에게 불리하니, 실제 제시받은 월세를 <b>실제 전환율</b> 칸으로 역산해 비교해 보세요. 기준금리는 <a href="https://www.bok.or.kr" target="_blank" rel="noopener">한국은행</a>에서 확인해 넣으세요.</div>
+</div></section>
+
+<section class="calc" id="c-move">
+<h2>아파트 갈아타기 비용</h2>
+<div class="card"><div class="f"><label class=""><span>지금 집 매도가 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="mvSell" type="number" step="0.1" value="7"></label><label class=""><span>지금 집 대출 잔액 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="mvLoanLeft" type="number" step="0.1" value="2"></label><label class=""><span>양도소득세 (비과세면 0) <span style="font-weight:600;color:var(--brand)">억</span></span><input id="mvGain" type="number" step="0.1" value="0"></label><label class=""><span>새 집 매수가 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="mvBuy" type="number" step="0.1" value="11"></label><label class=""><span>새로 받을 대출 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="mvNewLoan" type="number" step="0.1" value="4"></label><label class=""><span>새 집 전용면적</span><select id="mvArea"><option value="under" selected>85㎡ 이하</option><option value="over">85㎡ 초과</option></select></label><label class=""><span>이사·법무·수리비 <span style="font-weight:600;color:var(--brand)">만원</span></span><input id="mvEtc" type="number" step="10" value="500"></label><label class=""><span>지금 가진 현금 <span style="font-weight:600;color:var(--brand)">억</span></span><input id="mvHave" type="number" step="0.1" value="1"></label></div><div class="out" id="o-move"></div>
+<div class="hint">갈아타기는 세금과 중개비가 <b>양쪽 모두</b> 들어갑니다. 매도 중개비 + 매수 중개비 + 취득세 + 이사·법무비를 합치면 보통 매수가의 4~6%가 되고, 이 돈은 대출이 안 나오는 순수 현금입니다. 새 집 잔금일과 지금 집 잔금일이 어긋나면 그 기간만큼 브리지론 이자를 따로 잡아야 합니다. 일시적 2주택 비과세는 종전 주택을 정해진 기간 안에 팔아야 유지되니 잔금 일정을 먼저 맞추세요.</div>
+</div></section>
+
+<div class="note" style="margin-top:20px">세율과 요율은 2026-09 기준입니다. 세법은 자주 바뀌고 지자체 탄력세율·감면 특례·개인 사정에 따라 실제 금액은 달라집니다. 이 계산기는 어림잡기용이며 세무 자문이나 투자 권유가 아닙니다. 계약 전에는 <a href="https://www.wetax.go.kr" target="_blank" rel="noopener">위택스</a>와 <a href="https://www.hometax.go.kr" target="_blank" rel="noopener">홈택스</a>, 세무사, 금융기관에서 확인하세요.</div>
+<div class="card" style="margin-top:16px"><p style="margin:0">집 살 돈을 어떻게 마련할지, 부모님께 빌릴 때 증여세는 어떻게 되는지, 은행과 보험사 대출은 뭐가 다른지는 <a href="fund.html"><b>자금 마련 가이드</b></a>에 정리했습니다.</p></div>
+<script>
+(function () {
+  "use strict";
+  var $ = function (s) { return document.querySelector(s); };
+  var V = function (id) { var e = $(id); return e ? (parseFloat(e.value) || 0) : 0; };
+  var S = function (id) { var e = $(id); return e ? e.value : ""; };
+  var C = function (id) { var e = $(id); return e ? e.checked : false; };
+  var EOK = function (id) { return V(id) * 1e8; };
+  var MAN = function (id) { return V(id) * 1e4; };
+
+  function W(v) {
+    v = Math.round(v);
+    var neg = v < 0, a = Math.abs(v);
+    if (a >= 1e8) {
+      var e = Math.floor(a / 1e8), m = Math.round((a % 1e8) / 1e4);
+      return (neg ? "-" : "") + e + "억" + (m ? " " + m.toLocaleString() + "만" : "");
+    }
+    if (a >= 1e4) return (neg ? "-" : "") + Math.round(a / 1e4).toLocaleString() + "만원";
+    return (neg ? "-" : "") + a.toLocaleString() + "원";
+  }
+  function P(v) { return (Math.round(v * 10000) / 100).toFixed(2).replace(/\.?0+$/, "") + "%"; }
+  function row(k, v, cls) { return '<div class="row ' + (cls || "") + '"><span>' + k + "</span><b>" + v + "</b></div>"; }
+  function tot(k, v) { return '<div class="tot"><span>' + k + "</span><b>" + v + "</b></div>"; }
+  function head(k) { return '<div class="head">' + k + "</div>"; }
+  function pay(amt, r, n) { return r === 0 ? amt / n : amt * r / (1 - Math.pow(1 + r, -n)); }
+
+  // ---------------- 요율 표 ----------------
+  var SALE = [[5e7, 0.006, 25e4], [2e8, 0.005, 80e4], [9e8, 0.004, 0], [12e8, 0.005, 0], [15e8, 0.006, 0], [Infinity, 0.007, 0]];
+  var RENT = [[5e7, 0.005, 20e4], [1e8, 0.004, 30e4], [6e8, 0.003, 0], [12e8, 0.004, 0], [15e8, 0.005, 0], [Infinity, 0.006, 0]];
+  var CFT2 = [[3e8, 0.005, 0], [6e8, 0.007, 6e5], [12e8, 0.01, 24e5], [25e8, 0.013, 60e5], [50e8, 0.015, 110e5], [94e8, 0.02, 360e5], [Infinity, 0.027, 1018e5]];
+  var CFT3 = [[3e8, 0.005, 0], [6e8, 0.007, 6e5], [12e8, 0.01, 24e5], [25e8, 0.02, 1440e4], [50e8, 0.03, 3940e4], [94e8, 0.04, 8940e4], [Infinity, 0.05, 18340e4]];
+
+  function band(tbl, amt) {
+    for (var i = 0; i < tbl.length; i++) if (amt < tbl[i][0]) return tbl[i];
+    return tbl[tbl.length - 1];
+  }
+  function brokerage(tbl, amt) {
+    var b = band(tbl, amt), f = amt * b[1];
+    if (b[2]) f = Math.min(f, b[2]);
+    return { fee: f, rate: b[1], cap: b[2] };
+  }
+  function stamp(p) {
+    if (p <= 1e7) return 0;
+    if (p <= 3e7) return 2e4;
+    if (p <= 5e7) return 4e4;
+    if (p <= 1e8) return 7e4;
+    if (p <= 1e9) return 15e4;
+    return 35e4;
+  }
+  function acqRate(p, houses, adj, temp) {
+    var eff = (temp && houses === 2) ? 1 : houses, rate, heavy = 0;
+    if (eff === 1 || (eff === 2 && !adj)) {
+      if (p <= 6e8) rate = 0.01;
+      else if (p <= 9e8) { var x = p * 2 / 3e8 - 3; rate = (Math.round(x * 1e4) / 1e4) / 100; }
+      else rate = 0.03;
+    } else if ((eff === 2 && adj) || (eff === 3 && !adj)) { rate = 0.08; heavy = 8; }
+    else { rate = 0.12; heavy = 12; }
+    return { rate: rate, heavy: heavy };
+  }
+  function acqAll(p, houses, adj, temp, big) {
+    var r = acqRate(p, houses, adj, temp);
+    var acq = p * r.rate;
+    var edu = r.heavy ? p * 0.004 : acq * 0.1;
+    var nong = big ? p * (r.heavy === 12 ? 0.01 : r.heavy === 8 ? 0.006 : 0.002) : 0;
+    return { r: r, acq: acq, edu: edu, nong: nong, sum: acq + edu + nong };
+  }
+  function propTax(base, special) {
+    if (special) {
+      if (base <= 6e7) return base * 0.0005;
+      if (base <= 1.5e8) return 3e4 + (base - 6e7) * 0.001;
+      if (base <= 3e8) return 12e4 + (base - 1.5e8) * 0.002;
+      return 42e4 + (base - 3e8) * 0.0035;
+    }
+    if (base <= 6e7) return base * 0.001;
+    if (base <= 1.5e8) return 6e4 + (base - 6e7) * 0.0015;
+    if (base <= 3e8) return 19.5e4 + (base - 1.5e8) * 0.0025;
+    return 57e4 + (base - 3e8) * 0.004;
+  }
+
+  // ---------------- 취득세 ----------------
+  function calcAcq() {
+    var p = EOK("#aqPrice"), houses = +S("#aqHouses"), adj = S("#aqAdj") === "yes",
+        big = S("#aqArea") === "over", temp = C("#aqTemp");
+    var a = acqAll(p, houses, adj, temp, big), dis = 0;
+    if (C("#aqFirst") && p <= 12e8 && (houses === 1 || temp)) dis = Math.min(2e6, a.acq);
+    var total = a.sum - dis, h = "";
+    h += row("적용 취득세율", P(a.r.rate) + (a.r.heavy ? " <span style='color:#dc2626'>중과</span>" : ""));
+    h += row("취득세", W(a.acq));
+    h += row("지방교육세", W(a.edu));
+    h += row("농어촌특별세", big ? W(a.nong) : "비과세 (85㎡ 이하)");
+    if (dis) h += row("생애최초 감면", "− " + W(dis), "ok");
+    h += tot("취득 관련 세금", W(total));
+    h += row("매매가 대비", P(p > 0 ? total / p : 0));
+    h += head("참고: 함께 나가는 돈");
+    var bk = brokerage(SALE, p);
+    h += row("중개수수료 상한 (부가세 포함)", W(bk.fee * 1.1));
+    h += row("인지세 (통상 절반 부담)", W(stamp(p) / 2));
+    h += row("법무사 대행 (등기, 시세)", "20~50만원");
+    h += row("집값 + 세금 + 중개비", "<span style='font-size:17px'>" + W(p + total + bk.fee * 1.1 + stamp(p) / 2) + "</span>");
+    if (temp && houses === 2) h += row("주의", "종전 주택을 기한 내 못 팔면 중과세로 추징", "warn");
+    if (a.r.heavy) h += row("주의", "다주택 중과 구간입니다", "warn");
+    $("#o-acq").innerHTML = h;
+  }
+
+  // ---------------- 중개수수료 ----------------
+  function calcFee() {
+    var kind = S("#feeKind"), amt = EOK("#feeAmt"), mon = MAN("#feeMonthly");
+    var basis = amt, note = "";
+    if (kind === "wolse") {
+      basis = amt + mon * 100;
+      if (basis < 5e7) { basis = amt + mon * 70; note = "5천만원 미만이라 보증금 + 월세×70 으로 재계산"; }
+      else note = "보증금 + 월세×100";
+    }
+    var tbl = kind === "sale" ? SALE : RENT, b = band(tbl, basis);
+    var nego = V("#feeNego") / 100;
+    var fee = basis * (nego > 0 ? nego : b[1]);
+    if (b[2]) fee = Math.min(fee, b[2]);
+    var capFee = Math.min(basis * b[1], b[2] || Infinity);
+    var vat = fee * (+S("#feeVat") / 100);
+    var h = "";
+    if (note) h += row("거래금액 산정", note + " = " + W(basis));
+    h += row("법정 상한 요율", P(b[1]) + (b[2] ? " (한도 " + W(b[2]) + ")" : ""));
+    h += row("상한 적용 시", W(capFee));
+    if (nego > 0) h += row("협의 요율 " + P(nego) + " 적용", W(fee), fee < capFee ? "ok" : "warn");
+    h += row("부가세", vat > 0 ? W(vat) : "없음");
+    h += tot("한쪽이 내는 금액", W(fee + vat));
+    if (nego > 0 && capFee > fee) h += row("상한 대비 절약", W((capFee - fee) * 1.1), "ok");
+    if (kind === "sale") h += row("매도인 + 매수인 합계", W((fee + vat) * 2));
+    h += head("요율 구간표 (" + (kind === "sale" ? "매매·교환" : "임대차") + ")");
+    for (var i = 0; i < tbl.length; i++) {
+      var lo = i === 0 ? 0 : tbl[i - 1][0];
+      var lbl = tbl[i][0] === Infinity ? W(lo) + " 이상" : (lo === 0 ? "0" : W(lo)) + " ~ " + W(tbl[i][0]) + " 미만";
+      h += row(lbl + (tbl[i] === b ? " ←" : ""), P(tbl[i][1]) + (tbl[i][2] ? " · 한도 " + W(tbl[i][2]) : ""), tbl[i] === b ? "ok" : "");
+    }
+    $("#o-fee").innerHTML = h;
+  }
+
+  // ---------------- 대출 상환금 ----------------
+  function calcLoan() {
+    var amt = EOK("#lnAmt"), ar = V("#lnRate") / 100, r = ar / 12;
+    var n = Math.round(V("#lnYears") * 12), g = Math.min(Math.round(V("#lnGrace") * 12), n - 1);
+    if (g < 0) g = 0;
+    var rn = n - g, type = S("#lnType"), gi = amt * r;
+    var first, last, ti = gi * g, h = "";
+    if (n <= 0 || amt <= 0) { $("#o-loan").innerHTML = row("입력", "대출금과 기간을 넣어주세요"); return; }
+    if (type === "bullet") {
+      first = last = gi; ti = gi * n;
+      h += row("매달 이자만", W(gi));
+      h += row("만기에 갚을 원금", W(amt), "warn");
+    } else if (type === "eqpay") {
+      var m = pay(amt, r, rn);
+      ti += m * rn - amt; first = g ? gi : m; last = m;
+      if (g) { h += row("거치 기간 (" + (g / 12).toFixed(0) + "년) 월 상환", W(gi)); h += row("거치 종료 후 월 상환", W(m), "warn"); }
+      h += row("매달 상환액", W(m));
+    } else {
+      var pr = amt / rn, bal = amt;
+      for (var i = 0; i < rn; i++) { ti += bal * r; bal -= pr; }
+      first = g ? gi : pr + amt * r; last = pr + pr * r;
+      if (g) h += row("거치 기간 (" + (g / 12).toFixed(0) + "년) 월 상환", W(gi));
+      h += row("첫 회차 상환액", W(pr + amt * r));
+      h += row("마지막 회차 상환액", W(last));
+      h += row("매달 줄어드는 폭", W(pr * r));
+    }
+    h += tot("첫 달 실제 납입액", W(first));
+    h += row("총 이자", W(ti), "warn");
+    h += row("총 상환액 (원금 + 이자)", W(amt + ti));
+    h += row("이자가 원금의", P(amt > 0 ? ti / amt : 0));
+    var inc = MAN("#lnIncome");
+    if (inc > 0) {
+      var peak = Math.max(first, type === "eqpay" ? last : first);
+      h += head("소득 대비 부담");
+      h += row("연소득", W(inc));
+      h += row("연간 상환액 (최대 시점)", W(peak * 12));
+      var burden = peak * 12 / inc;
+      h += row("소득 대비 비중", P(burden), burden > 0.4 ? "warn" : burden > 0.3 ? "" : "ok");
+      h += row("판단 기준", burden > 0.4 ? "DSR 40%를 넘어 은행 한도 초과 가능" : burden > 0.3 ? "감당 가능하나 여유는 적음" : "비교적 안전한 수준", burden > 0.4 ? "warn" : "");
+    }
+    $("#o-loan").innerHTML = h;
+  }
+
+  // ---------------- DSR 한도 ----------------
+  function calcDsr() {
+    var inc = MAN("#dsIncome"), other = MAN("#dsOther");
+    var realR = V("#dsRate") / 100 / 12, sr = (V("#dsRate") + V("#dsStress")) / 100 / 12;
+    var n = Math.round(V("#dsYears") * 12), cap = +S("#dsCap") / 100;
+    var price = EOK("#dsPrice"), ltv = V("#dsLtv") / 100;
+    if (inc <= 0 || n <= 0) { $("#o-dsr").innerHTML = row("입력", "연소득과 기간을 넣어주세요"); return; }
+    var room = inc * cap - other;
+    var factor = 12 * pay(1, sr, n);
+    var dsrMax = room > 0 ? room / factor : 0;
+    var ltvMax = price * ltv;
+    var fin = Math.min(dsrMax, ltvMax);
+    var monthly = fin > 0 ? pay(fin, realR, n) : 0;
+    var a = acqAll(price, 1, false, false, false);
+    var bk = brokerage(SALE, price);
+    var need = price - fin + a.sum + bk.fee * 1.1 + stamp(price) / 2;
+    var h = "";
+    h += row("DSR 한도 (" + P(cap) + ")", W(inc * cap) + " / 년");
+    if (other > 0) h += row("기존 대출이 쓰는 몫", "− " + W(other));
+    h += row("추가로 쓸 수 있는 연 상환액", W(Math.max(0, room)));
+    h += row("심사 금리 (스트레스 포함)", P(V("#dsRate") / 100) + " + " + V("#dsStress") + "%p = " + P((V("#dsRate") + V("#dsStress")) / 100));
+    h += row("DSR 기준 최대 대출", W(dsrMax));
+    h += row("LTV " + P(ltv) + " 기준 최대 대출", W(ltvMax));
+    h += tot("실제 가능한 대출", W(fin));
+    h += row("한도를 정하는 것", dsrMax < ltvMax ? "소득(DSR)이 한도를 결정" : "집값(LTV)이 한도를 결정");
+    h += head("그래서 현금이 얼마 필요한가");
+    h += row("집값", W(price));
+    h += row("대출", "− " + W(fin));
+    h += row("취득세 등", "+ " + W(a.sum));
+    h += row("중개수수료 (부가세 포함)", "+ " + W(bk.fee * 1.1));
+    h += row("인지세", "+ " + W(stamp(price) / 2));
+    h += tot("필요한 자기자금", W(need));
+    h += head("갚을 때 부담");
+    h += row("실제 금리로 월 상환액", W(monthly));
+    h += row("월 소득 대비", P(inc > 0 ? monthly * 12 / inc : 0));
+    h += row("총 이자 (" + V("#dsYears") + "년)", W(monthly * n - fin), "warn");
+    if (other > 0 && room <= 0) h += row("경고", "기존 대출만으로 이미 DSR 한도를 채웠습니다", "warn");
+    $("#o-dsr").innerHTML = h;
+  }
+
+  // ---------------- 보유세 ----------------
+  function calcHold() {
+    var pub = EOK("#hdPub"), houses = +S("#hdHouses"), couple = C("#hdCouple");
+    if (pub <= 0) { $("#o-hold").innerHTML = row("입력", "공시가격을 넣어주세요"); return; }
+    var share = couple ? 0.5 : 1, per = pub * share;
+    var fair = houses === 1 ? (pub <= 3e8 ? 0.43 : pub <= 6e8 ? 0.44 : 0.45) : 0.6;
+    var base = per * fair;
+    var special = houses === 1 && pub <= 9e8;
+    var mul = couple ? 2 : 1;
+    var pmain = propTax(base, special);
+    var city = base * 0.0014, ptEdu = pmain * 0.2;
+    var propSum = (pmain + city + ptEdu) * mul;
+    var ded = couple ? 9e8 : (houses === 1 ? 12e8 : 9e8);
+    var cft = 0, agri = 0, cftBase = 0, credit = 0, gross = 0, dup = 0;
+    if (per > ded) {
+      cftBase = (per - ded) * 0.6;
+      var tbl = houses >= 3 ? CFT3 : CFT2, b = band(tbl, cftBase);
+      gross = cftBase * b[1] - b[2];
+      dup = pmain * ((per - ded) / per);
+      var net = Math.max(0, gross - dup);
+      if (houses === 1 && !couple) {
+        var age = V("#hdAge"), hold = V("#hdHold");
+        var ac = age >= 70 ? 0.4 : age >= 65 ? 0.3 : age >= 60 ? 0.2 : 0;
+        var hc = hold >= 15 ? 0.5 : hold >= 10 ? 0.4 : hold >= 5 ? 0.2 : 0;
+        credit = Math.min(0.8, ac + hc);
+        net = net * (1 - credit);
+      }
+      cft = net * mul; agri = cft * 0.2;
+    }
+    var h = "";
+    h += head("재산세");
+    h += row("공정시장가액비율", P(fair) + (houses === 1 ? " (1주택 특례)" : ""));
+    h += row("과세표준" + (couple ? " (1인 지분)" : ""), W(base));
+    h += row("재산세 본세" + (special ? " (1주택 특례세율)" : ""), W(pmain * mul));
+    h += row("도시지역분 (과표 0.14%)", W(city * mul));
+    h += row("지방교육세 (재산세 20%)", W(ptEdu * mul));
+    h += row("재산세 합계", W(propSum));
+    h += head("종합부동산세");
+    h += row("공제액" + (couple ? " (각 9억 × 2인)" : ""), W(ded * mul));
+    if (per <= ded) {
+      h += row("종부세", "대상 아님 (공시가격이 공제액 이하)", "ok");
+    } else {
+      h += row("과세표준" + (couple ? " (1인 지분)" : ""), W(cftBase));
+      h += row("산출세액", W(gross * mul));
+      h += row("재산세 중복분 공제 (추정)", "− " + W(dup * mul));
+      if (credit > 0) h += row("고령자·장기보유 세액공제", "− " + P(credit), "ok");
+      h += row("종부세", W(cft));
+      h += row("농어촌특별세 (종부세 20%)", W(agri));
+    }
+    h += tot("연간 보유세 (추정)", W(propSum + cft + agri));
+    h += row("공시가격 대비", P(propSum > 0 ? (propSum + cft + agri) / pub : 0));
+    h += row("월로 나누면", W((propSum + cft + agri) / 12));
+    if (couple && houses === 1 && pub > 18e8) h += row("참고", "1주택 특례(12억 공제 + 세액공제) 신청이 유리할 수 있습니다", "");
+    if (!couple && houses === 1 && pub > 12e8) h += row("참고", "부부 공동명의로 바꾸면 공제가 18억으로 늘지만 세액공제는 못 받습니다", "");
+    $("#o-hold").innerHTML = h;
+  }
+
+  // ---------------- 전월세 환산 ----------------
+  function calcConv() {
+    var j = EOK("#cvJeonse"), d = EOK("#cvDeposit");
+    var legal = Math.min((V("#cvBase") + V("#cvAdd")) / 100, 0.10);
+    var real = V("#cvReal") / 100, rate = real > 0 ? real : legal;
+    var diff = j - d;
+    var h = "";
+    h += row("법정 전환율 상한", P(legal) + " (기준금리+" + V("#cvAdd") + "%p 와 10% 중 낮은 값)");
+    if (real > 0) h += row("실제 적용 전환율", P(real), real > legal ? "warn" : "ok");
+    if (diff <= 0) {
+      h += row("입력", "전세 보증금이 전환 후 보증금보다 커야 합니다", "warn");
+    } else {
+      var m = diff * rate / 12, lm = diff * legal / 12;
+      h += head("전세 → 월세");
+      h += row("보증금을 " + W(d) + " 로 낮추면", "돌려받는 돈 " + W(diff));
+      h += tot("월세", W(m));
+      if (real > 0 && Math.abs(m - lm) > 1000) {
+        h += row("법정 상한 기준 월세", W(lm));
+        h += row("연간 차액", W((m - lm) * 12), m > lm ? "warn" : "ok");
+      }
+      var lr = V("#cvLoanRate") / 100;
+      if (lr > 0) {
+        h += head("월세 vs 전세대출 " + P(lr));
+        h += row("보증금 차액을 대출로 조달하면 월 이자", W(diff * lr / 12));
+        var better = diff * lr / 12 < m;
+        h += row("유리한 쪽", better ? "전세 유지 (대출 이자가 더 싸다)" : "월세 전환 (전환율이 대출금리보다 낮다)", "ok");
+        h += row("월 차이", W(Math.abs(m - diff * lr / 12)));
+      }
+    }
+    var back = MAN("#cvMonthly");
+    if (back > 0 && rate > 0) {
+      h += head("월세 → 전세 환산");
+      h += row("보증금 " + W(d) + " + 월세 " + W(back), "");
+      h += tot("전세로 치면", W(d + back * 12 / rate));
+    }
+    $("#o-conv").innerHTML = h;
+  }
+
+  // ---------------- 갈아타기 ----------------
+  function calcMove() {
+    var sell = EOK("#mvSell"), left = EOK("#mvLoanLeft"), gain = EOK("#mvGain");
+    var buy = EOK("#mvBuy"), nl = EOK("#mvNewLoan"), etc = MAN("#mvEtc"), have = EOK("#mvHave");
+    var big = S("#mvArea") === "over";
+    var sf = brokerage(SALE, sell).fee * 1.1, bf = brokerage(SALE, buy).fee * 1.1;
+    var a = acqAll(buy, 1, false, true, big), st = stamp(buy) / 2;
+    var inflow = sell - sf - gain - left + nl + have;
+    var outflow = buy + a.sum + bf + etc + st;
+    var gapv = inflow - outflow;
+    var cost = sf + bf + a.sum + etc + st + gain;
+    var h = "";
+    h += head("들어오는 돈");
+    h += row("지금 집 매도가", W(sell));
+    h += row("매도 중개수수료", "− " + W(sf));
+    if (gain > 0) h += row("양도소득세", "− " + W(gain));
+    h += row("기존 대출 상환", "− " + W(left));
+    h += row("새 대출", "+ " + W(nl));
+    h += row("보유 현금", "+ " + W(have));
+    h += row("합계", W(inflow));
+    h += head("나가는 돈");
+    h += row("새 집 매수가", W(buy));
+    h += row("취득세 등 (" + P(a.r.rate) + ")", W(a.sum));
+    h += row("매수 중개수수료", W(bf));
+    h += row("인지세", W(st));
+    h += row("이사·법무·수리비", W(etc));
+    h += row("합계", W(outflow));
+    h += tot(gapv >= 0 ? "남는 돈" : "부족한 돈", (gapv < 0 ? "" : "") + W(Math.abs(gapv)));
+    if (gapv < 0) h += row("해결 방법", "대출을 " + W(-gapv) + " 더 받거나 예산을 낮춰야 합니다", "warn");
+    h += head("갈아타기 순비용");
+    h += row("집값 차이", W(buy - sell));
+    h += row("세금·중개비·이사비 합계", W(cost), "warn");
+    h += row("매수가 대비 거래비용", P(buy > 0 ? cost / buy : 0));
+    h += row("총 대출", W(nl) + " (기존 " + W(left) + " 상환 후)");
+    h += row("주의", "잔금일이 어긋나면 그 기간 브리지론 이자가 추가됩니다", "");
+    $("#o-move").innerHTML = h;
+  }
+
+  // ---------------- 공통 ----------------
+  var KEY = "jipkok_calc_v1";
+  function fields() { return document.querySelectorAll(".f input, .f select"); }
+  function save() {
+    var o = {};
+    Array.prototype.forEach.call(fields(), function (e) { o[e.id] = e.type === "checkbox" ? e.checked : e.value; });
+    try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (err) {}
+  }
+  function load() {
+    try {
+      var o = JSON.parse(localStorage.getItem(KEY) || "{}");
+      Object.keys(o).forEach(function (k) {
+        var e = document.getElementById(k);
+        if (!e) return;
+        if (e.type === "checkbox") e.checked = !!o[k]; else e.value = o[k];
+      });
+    } catch (err) {}
+  }
+  function all() {
+    [calcAcq, calcFee, calcLoan, calcDsr, calcHold, calcConv, calcMove].forEach(function (f) {
+      try { f(); } catch (err) { }
+    });
+  }
+  function tab(k) {
+    Array.prototype.forEach.call(document.querySelectorAll("#tabs button"), function (b) {
+      b.classList.toggle("on", b.dataset.t === k);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".calc"), function (s) {
+      s.classList.toggle("on", s.id === "c-" + k);
+    });
+  }
+  document.getElementById("tabs").addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    tab(b.dataset.t);
+    history.replaceState(null, "", "#" + b.dataset.t);
+  });
+  document.addEventListener("input", function (e) {
+    if (e.target.closest(".f")) { all(); save(); }
+  });
+  document.addEventListener("change", function (e) {
+    if (e.target.closest(".f")) { all(); save(); }
+  });
+  function fromHash() {
+    var k = (location.hash || "").replace("#", "");
+    if (k && document.getElementById("c-" + k)) tab(k);
+  }
+  window.addEventListener("hashchange", fromHash);
+  load();
+  // 단지 페이지에서 넘어온 가격(억)을 채운다: calc.html?price=9.5#acq
+  try {
+    var qp = new URLSearchParams(location.search), pv = parseFloat(qp.get("price"));
+    if (pv > 0) {
+      ["#aqPrice", "#feeAmt", "#dsPrice", "#mvBuy"].forEach(function (id) {
+        var e = $(id); if (e) e.value = pv;
+      });
+      var nm = qp.get("name");
+      if (nm) {
+        var n = document.createElement("div");
+        n.className = "card";
+        n.style.cssText = "margin:10px 0 0";
+        n.innerHTML = "<b>" + nm.replace(/[<>&]/g, "") + "</b> 의 실거래가 " + pv + "억을 각 계산기에 채웠습니다. 값을 바꿔서 다시 계산해 보세요.";
+        var tb = document.getElementById("tabs");
+        tb.parentNode.insertBefore(n, tb);
+      }
+    }
+  } catch (err) {}
+  all();
+  fromHash();
+})();
+</script>
+<footer class="disclaim" style="margin-top:40px;border-top:1px solid var(--line);padding-top:14px">집콕맵 · <a href="about.html">소개</a> · <a href="guide.html">지표 설명</a> · <a href="calc.html">계산기</a> · <a href="fund.html">자금 마련</a> · <a href="rank/budget-school.html">예산별 학군지</a> · <a href="privacy.html">개인정보처리방침</a> · <a href="moving.html">이사 준비</a> · <a href="feed.html">제보 피드</a><br>공공데이터(국토교통부·교육부·한국교육시설안전원·나이스·학교알리미·서울시)와 오픈스트리트맵, 카카오 지도 정보를 조합해 자동 생성한 참고 자료입니다. 매매 판단 전 반드시 현장·등기부·교육청 공지를 확인하세요.</footer>
+</div><script>(function(){try{var P=location.pathname,p=/\/apt\//.test(P)?"apt":/\/rank\//.test(P)?"rank":/guide/.test(P)?"guide":/calc/.test(P)?"calc":/fund/.test(P)?"fund":/moving/.test(P)?"moving":"other";if(/^(localhost|127\.)/.test(location.hostname)||sessionStorage.getItem("jk_v"))return;sessionStorage.setItem("jk_v","1");navigator.sendBeacon&&navigator.sendBeacon("https://aptmap-api.jipkokmap.workers.dev/hit",JSON.stringify({t:"visit",p:p,r:document.referrer}))}catch(e){}})();</script></body></html>
